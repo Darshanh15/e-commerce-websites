@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product View</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .left{
+            min-width: 400px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .right{
+            min-width: 400px;
+            flex: 1;
+            padding: 20px;
+        }
+        .left img{
+            width: 60%;
+        }
+        .right .title{
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        .btns, .price{
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: space-between;
+        }
+        .btns button{
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btns button:first-child{
+            background-color: #FFB000;
+        }
+        .right p{
+            font-size: 1.2rem;
+            line-height: 2;
+            letter-spacing: 1.2px;
+            word-spacing: 1.4px;
+            margin-top: 10px;
+        }
+        .carousel button{
+            /* display: flex; */
+            /* justify-content: center; */
+            position: fixed;
+            font-size: 2rem;
+            border-radius: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #FFB000;
+            cursor: pointer;
+        }
+        .carousel button:first-child{
+            top: 50%;
+            left: 10px;
+        }
+        .carousel button:last-child{
+            top: 50%;
+            right: 10px;
+        }
+        #i{
+            position: fixed;
+            left: 50%;
+            bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="spinner" id="spinner"></div>
+    </div>
+    <div class="indicators">
+        <h1 id="i"></h1>
+    </div>
+    <div class="carousel">
+        <button onclick="decreeser()">Prev</button>
+        <button onclick="Increeser()">Next</button>
+    </div>
+
+    <script>
+         var isLoading = true;
+
+function LoadingChecker(){
+     isLoading = !isLoading;
+     if(isLoading == true){
+         document.getElementById('spinner').style.display = "block"
+         // document.getElementById('btn').innerHTML = "remove loading"
+     }
+     else{
+         document.getElementById('spinner').style.display = "none"
+         // document.getElementById('btn').innerHTML = "Start loading"
+    }
+}
+
+    var id = 1;
+function dataloader(){
+    
+    document.getElementById('i').innerHTML = id
+    fetch(`https://fakestoreapi.com/products/${id}`)
+        .then(pending=>pending.json())
+        .then(data=>{
+            isLoading = false;
+            LoadingChecker();
+            console.log(data)
+            const container = document.getElementById('container')
+            container.innerHTML = `
+            <div class="left">
+            <img src=${data.image} alt="">
+        </div>
+        <div class="right">
+            <h2 class="title">${data.title}</h2>
+            <div class="price">
+                <select name="" id="">
+                    <option value="">XSM</option>
+                    <option value="">SM</option>
+                    <option value="">M</option>
+                    <option value="">XL</option>
+                    <option value="">XXl</option>
+                </select>
+                <h3>&#8377;${data.price}</h3>
+            </div>
+           
+            <p>${data.description}</p>
+            <div class="btns">
+                <button>ADD TO CART</button>
+                <button>ORDER NOW</button>
+            </div>
+        </div>
+            `
+        })
+}
+dataloader();
+        function Increeser(){
+           if(id<=20){
+            id = id +1
+           }
+            dataloader()
+            document.getElementById('i').innerHTML = id
+        }
+        function decreeser(){
+            if(id>1){
+                id = id-1
+                document.getElementById('i').innerHTML = id
+                dataloader()
+            }
+        }
+    </script>
+    
+</body>
+</html>
